@@ -1,0 +1,30 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "pg/schema.sql"
+    queries: "pg/schema.sql"
+    gen:
+      go:
+        package: "repo"
+        out: "pg/repo"
+        sql_package: "pgx/v4"
+        overrides:
+          - column: "accounts.passphrase"
+            go_type:
+              type: "string"
+              pointer: true
+          - column: "portfolio_triggers.limit"
+            go_type:
+              import: "gitlab.com/moderntoken/gateways/decimal"
+              type: "Decimal"
+              pointer: true
+          - column: "portfolio_triggers.percent"
+            go_type:
+              import: "gitlab.com/moderntoken/gateways/decimal"
+              type: "Decimal"
+              pointer: true
+          - column: "portfolio_triggers.start_total_cost"
+            go_type:
+              import: "gitlab.com/moderntoken/gateways/decimal"
+              type: "Decimal"
+              pointer: true

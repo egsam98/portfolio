@@ -1,0 +1,8 @@
+config.yaml
+volumes/
+*.pem
+Makefile.test
+coverage.out
+
+# IDE
+.idea/

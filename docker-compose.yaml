@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    container_name: db
+    image: postgres:14.2-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+    volumes:
+      - ${PWD}/volumes/rabbitmq/data:/var/lib/rabbitmq
+      - ${PWD}/rabbit_definitions.json:/definitions.json:ro
+
+  redis:
+    container_name: redis
+    image: redis:7.0.2-alpine
+    ports:
+      - "6379:6379"

@@ -1,0 +1,23 @@
+@startuml
+
+component Portfolio
+interface AMQP
+interface HTTP as http1
+interface HTTP as http2
+database Redis
+queue RabbitMQ
+cloud Binance
+component Backend
+database PostgreSQL
+
+Portfolio -0)- http1
+Portfolio ..> http2: use
+Binance .> http2: use
+Portfolio ---> Redis: Баланс аккаунта
+Portfolio <-> AMQP: Чтение из portfolio.events,\n Запись в portfolio.trigger_events
+Portfolio <--> PostgreSQL: Запрос аккаунтов и \nсохранение/удаление \nтриггеров портфолио
+RabbitMQ ..> AMQP: impl
+AMQP <-> Backend
+Redis --> Backend: запрос баланс аккаунта
+
+@enduml

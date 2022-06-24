@@ -1,0 +1,27 @@
+server_name: "debug"
+jwt_secret_path: "secret.pem"
+
+log:
+  pretty: true
+  level: debug
+
+rabbit_mq:
+  uri: "amqp://guest:guest@127.0.0.1:5672"
+  channel_pool_size: 100
+
+db:
+  live: true
+  user: "postgres"
+  password: "postgres"
+  host: "localhost:5432"
+  name: "postgres"
+  disable_tls: true
+  cert_path: ""
+  max_open_conns: 100
+  max_conn_life_time_mins: 5
+  log: true
+
+redis:
+  host: "localhost:6379"
+  password: ""
+  db: 0

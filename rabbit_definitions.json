@@ -1,0 +1,36 @@
+{
+  "queues": [
+    {
+      "name": "portfolio.events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    },
+    {
+      "name": "portfolio.trigger_events",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ],
+  "bindings": [
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "portfolio.events",
+      "destination_type": "queue",
+      "routing_key": "marvin.*.portfolio.events",
+      "arguments": {}
+    },
+    {
+      "source": "amq.topic",
+      "vhost": "/",
+      "destination": "portfolio.trigger_events",
+      "destination_type": "queue",
+      "routing_key": "marvin.*.portfolio.trigger_events",
+      "arguments": {}
+    }
+  ]
+}

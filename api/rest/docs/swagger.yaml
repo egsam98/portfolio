@@ -1,0 +1,154 @@
+definitions:
+  echo.HTTPError:
+    properties:
+      message: {}
+    type: object
+  portfolio.ConvertedTo:
+    additionalProperties:
+      type: number
+    type: object
+  portfolio.Data:
+    properties:
+      balance:
+        properties:
+          details:
+            additionalProperties:
+              $ref: '#/definitions/portfolio.ConvertedTo'
+            type: object
+          total:
+            $ref: '#/definitions/portfolio.ConvertedTo'
+        required:
+        - details
+        - total
+        type: object
+      prices:
+        additionalProperties:
+          $ref: '#/definitions/portfolio.ConvertedTo'
+        type: object
+    required:
+    - prices
+    type: object
+  portfolio.Info:
+    properties:
+      data:
+        $ref: '#/definitions/portfolio.Data'
+      trigger_settings:
+        items:
+          $ref: '#/definitions/portfolio.TriggerSettings'
+        type: array
+    required:
+    - data
+    - trigger_settings
+    type: object
+  portfolio.TriggerSettings:
+    properties:
+      created_at:
+        example: 1654586492
+        format: timestamp
+        type: integer
+      currency:
+        enum:
+        - USDT
+        - BTC
+        type: string
+      id:
+        example: e1c6c253-00cd-4562-ae5c-ce065f8530c6
+        format: UUID
+        type: string
+      limit:
+        type: number
+      percent:
+        type: number
+      start_total_cost:
+        type: number
+      trailing_alert:
+        type: boolean
+      type:
+        enum:
+        - COST_REACHED_LIMIT
+        - COST_CHANGED_BY_PERCENT
+        type: string
+    required:
+    - created_at
+    - currency
+    - id
+    - type
+    type: object
+info:
+  contact: {}
+paths:
+  /portfolios/:name/data:
+    get:
+      parameters:
+      - description: Portfolio name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio.Info'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Portfolio data
+      tags:
+      - Portfolios
+  /portfolios/:name/triggers:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Portfolio name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: body
+        required: true
+        schema:
+          items:
+            properties:
+              currency:
+                enum:
+                - USDT
+                - BTC
+                type: string
+              limit:
+                type: number
+              percent:
+                type: number
+              trailing_alert:
+                type: boolean
+              type:
+                enum:
+                - COST_REACHED_LIMIT
+                - COST_CHANGED_BY_PERCENT
+                type: string
+            required:
+            - currency
+            - type
+            type: object
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/portfolio.TriggerSettings'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/echo.HTTPError'
+      summary: Add trigger to portfolio
+      tags:
+      - Portfolios
+swagger: "2.0"

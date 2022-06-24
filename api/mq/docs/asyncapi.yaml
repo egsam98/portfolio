@@ -1,0 +1,102 @@
+asyncapi: 2.1.0
+info:
+  title: Portfolio
+  version: "1.0"
+
+channels:
+  portfolio.trigger_events:
+    description: Portfolio trigger events
+    publish:
+      message:
+        $ref: '#/components/messages/TriggerEvent'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: amq.topic
+  portfolio.events:
+    description: Account created/deleted event
+    subscribe:
+      message:
+        $ref: '#/components/messages/Event'
+    bindings:
+      amqp:
+        is: routingKey
+        exchange:
+          name: amq.topic
+
+components:
+  schemas:
+    Currency:
+      type: string
+      enum:
+        - USDT
+        - BTC
+    TriggerEvent:
+      properties:
+        current_value:
+          type: number
+        portfolio:
+          type: string
+        timestamp:
+          format: timestamp
+          type: integer
+        trigger_settings:
+          $ref: '#/components/schemas/TriggerSettings'
+      required:
+      - portfolio
+      - timestamp
+      - current_value
+      - trigger_settings
+      type: object
+    Event:
+      properties:
+        event:
+          type: string
+          enum:
+            - ACCOUNT_CREATED
+            - ACCOUNT_DELETED
+        account_name:
+          type: string
+      required:
+        - event
+        - account_name
+      type: object
+    TriggerSettings:
+      properties:
+        created_at:
+          examples:
+            - 1.654586492e+09
+          format: timestamp
+          type: integer
+        currency:
+          $ref: '#/components/schemas/Currency'
+        id:
+          type: string
+          format: uuid
+        limit:
+          type: number
+          description: "Presents if type is COST_REACHED_LIMIT"
+        percent:
+          type: number
+          description: "Presents if type is COST_CHANGED_BY_PERCENT"
+        start_total_cost:
+          type: number
+          description: "Presents if type is COST_CHANGED_BY_PERCENT"
+        trailing_alert:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/TriggerType'
+      type: object
+    TriggerType:
+      type: string
+      enum:
+        - COST_REACHED_LIMIT
+        - COST_CHANGED_BY_PERCENT
+  messages:
+    TriggerEvent:
+      payload:
+        $ref: '#/components/schemas/TriggerEvent'
+    Event:
+      payload:
+        $ref: '#/components/schemas/Event'

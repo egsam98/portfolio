@@ -1,0 +1,14 @@
+linters:
+  enable:
+    - ifshort
+    - predeclared
+    - nilerr
+    - exportloopref
+    - gosec
+    - bodyclose
+    - dogsled
+    - durationcheck
+    - errorlint
+    - prealloc
+    - misspell
+    - unparam
